@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>calion.com</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Delius&family=Ole&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #ededed;
+            overflow-y: auto;
+        }
+
+        /* Loading screen styles */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+       background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #000000 100%);
+
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+            overflow: hidden;
+        }
+
+    
+
+        
+
+        .loading-screen.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-content {
+            text-align: center;
+            color: white;
+            max-width: 500px;
+            padding: 0 20px;
+            animation: floatIn 1.2s ease-out, breathe 4s ease-in-out infinite 1.5s;
+        }
+
+        @keyframes floatIn {
+            0% {
+                opacity: 0;
+                transform: translateY(50px) scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes breathe {
+            0%, 100% {
+                transform: scale(1) translateY(0);
+            }
+            50% {
+                transform: scale(1.02) translateY(-5px);
+            }
+        }
+
+        .brand-logo {
+            font-size: 4rem;
+            font-weight: 300;
+            font-family:bebas neue,sans-serif;;
+            margin-bottom: 1rem;
+            letter-spacing: 12px;
+            background: linear-gradient(45deg, #ffffff 0%, #f7f9ff 50%, #e0e6ff 75%, #c8dfff 100%);
+
+            background-size: 300% 300%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 2s ease-in-out infinite alternate, gradientShift 4s ease-in-out infinite, logoFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes logoFloat {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            33% {
+                transform: translateY(-8px) rotate(1deg);
+            }
+            66% {
+                transform: translateY(4px) rotate(-0.5deg);
+            }
+        }
+
+        @keyframes shimmer {
+            0%, 100% {
+                transform: translateX(-150px) translateY(-150px) rotate(0deg) scale(1);
+            }
+            25% {
+                transform: translateX(100px) translateY(-100px) rotate(90deg) scale(1.1);
+            }
+            50% {
+                transform: translateX(150px) translateY(150px) rotate(180deg) scale(0.9);
+            }
+            75% {
+                transform: translateX(-100px) translateY(100px) rotate(270deg) scale(1.1);
+            }
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 5px rgba(255,255,255,0.3)); }
+            to { filter: drop-shadow(0 0 20px rgba(255,255,255,0.6)); }
+        }
+
+        .loading-text {
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .progress-container {
+            width: 320px;
+            height: 8px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 20px;
+            overflow-y:auto;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            position: relative;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .progress-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255,255,255,0.1) 25%, 
+                rgba(255,255,255,0.2) 50%, 
+                rgba(255,255,255,0.1) 75%, 
+                transparent 100%);
+            animation: sweep 2s ease-in-out infinite;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, 
+                #4facfe 0%, 
+                #00f2fe 25%, 
+                #a8edea 50%, 
+                #fed6e3 75%, 
+                #ffeaa7 100%);
+            border-radius: 20px;
+            width: 0%;
+            animation: progress 3s ease-out forwards, pulse 1.5s ease-in-out infinite 1s;
+            box-shadow: 
+                0 0 20px rgba(79, 172, 254, 0.6),
+                inset 0 2px 4px rgba(255,255,255,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255,255,255,0.4) 50%, 
+                transparent 100%);
+            animation: progressGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes sweep {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 
+                    0 0 20px rgba(79, 172, 254, 0.6),
+                    inset 0 2px 4px rgba(255,255,255,0.3);
+            }
+            50% {
+                box-shadow: 
+                    0 0 30px rgba(79, 172, 254, 0.9),
+                    0 0 40px rgba(0, 242, 254, 0.4),
+                    inset 0 2px 4px rgba(255,255,255,0.5);
+            }
+        }
+
+        @keyframes progressGlow {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            20% { width: 15%; }
+            40% { width: 35%; }
+            60% { width: 55%; }
+            80% { width: 85%; }
+            100% { width: 100%; }
+        }
+
+        .loading-dots {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 50%;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes pulse {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 0.7;
+            }
+            50% { 
+                transform: scale(1.3);
+                opacity: 1;
+            }
+        }
+
+        .loading-status {
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            opacity: 0.8;
+            min-height: 20px;
+        }
+
+        /* Main content - initially hidden */
+        .main-content {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease 0.3s, visibility 0.5s ease 0.3s;
+        }
+
+        .main-content.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Rest of the original styles */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: #968b7e;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .img-container {
+           position:relative;
+            width: 100%;
+            height: 300px;
+            overflow-y:auto;
+            background: #f8f8f8;
+        }
+
+        .main-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: opacity 0.3s;
+            cursor: pointer;
+        }
+
+        .thumbs {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 8px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .img-container:hover .thumbs {
+            opacity: 1;
+        }
+
+        .thumb {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .thumb:hover,
+        .thumb.active {
+            transform: scale(1.1);
+            border-color: #ff6b35;
+        }
+
+        .info {
+            padding: 15px;
+        }
+
+        .title {
+            font-size: 16px;
+            font-family:delius,sans-serif;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 8px;
+            line-height: 1.3;
+            height: 40px;
+            overflow: hidden;
+            text-align:center;
+            text-shadow:2px 2px 3px black;
+        }
+
+        .price {
+            margin-bottom: 12px;
+        }
+
+        .current {
+            font-size: 35px;
+            font-family:ole,cursive;
+            font-weight: 700;
+            color: brown ;
+            margin-right: 8px;
+            text-align:center;
+            text-shadow:2px 2px 4px black;
+        }
+
+        .original {
+            font-size: 10px;
+            color: #ffffff;
+            text-decoration: line-through;
+            margin-right: 8px;
+            opacity:80%;
+            font-family:ole,cursive;
+            text-shadow:2px 2px 2px black;
+        }
+
+        .discount {
+            background: #cc0c39;
+            color: #fff;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #110d26;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family:bebas neue,cursive;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: transparent;
+            color: #ffffff;
+            letter-spacing:2px;
+        }
+
+        .btn:hover {
+            background: #110d26;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .wishlist {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            font-size: 16px;
+        }
+
+        .wishlist:hover {
+            background: #ff6b35;
+            color: #fff;
+            transform: scale(1.1);
+        }
+
+        .badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #28a745;
+            color: #fff;
+            padding: 3px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .brand-logo {
+                font-size: 3rem;
+                letter-spacing: 6px;
+            }
+            
+            .progress-container {
+                width: 250px;
+                height: 6px;
+            }
+            
+            .grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 15px;
+            }
+            
+            .container {
+                padding: 0 10px;
+            }
+            
+            .img-container {
+                height: 200px;
+            }
+            
+        }
+        #header1 {
+			margin-top:0px; 
+			transform: translate(2px, -18px);
+			font-size:80px;
+		}
+		
+		
+	 footer {
+      background: #ededed;
+      color: brown;
+      font-family:bebas neue,sans-serif;
+      padding: 20px 0;
+      margin-top: 50px;
+     font-weight:500;
+      letter-spacing:2px;
+     
+    }
+    .footer-container {
+      width: 90%;
+      max-width: 1000px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    .footer-message {
+      flex: 1 1 100%;
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: 1.2em;
+    }
+    .footer-contact, .footer-admins {
+      flex: 1 1 45%;
+      margin: 10px;
+    }
+    .footer-contact h3, .footer-admins h3 {
+      margin-bottom: 8px;
+      font-size: 1.1em;
+      border-bottom: 1px solid #444;
+      padding-bottom: 5px;
+    }
+    .footer-admins ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .footer-admins li {
+      margin-bottom: 5px;
+      }
+
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="brand-logo">calion</div>
+            <div class="loading-text">The'BRAND' Made For Men</div>
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+            </div>
+            <div class="loading-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <div class="loading-status" id="loadingStatus">Initializing...</div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <div class="container">
+            <div style="text-align:center;margin-bottom:30px;color:brown;top:0px;background:transparent;height:100px;max-width:100%;"> 
+            <h2 id="header1"><i>calion</i></h2>
+            <h4  style=" margin-top: -5px;
+    font-size: 10px;" >Cloth | Shoes | Accessories</h4>
+          
+            </div> 
+            </div>
+            <div class="grid">
+                <!-- Product 1: Headphones -->
+                <div class="card">
+                    <div class="img-container">
+                        <div class="badge">Best Seller</div>
+                        <button class="wishlist" onclick="toggleWish(this)">♡</button>
+                        <img class="main-img" src="assets/cover1.png" alt="Headphones">
+                        <div class="thumbs">
+                            <img class="thumb active" src="assets/cover1.png" data-main="assets/cover1.png">
+                            <img class="thumb" src="assets/cover2.png" data-main="assets/cover2.png">
+                            <img class="thumb" src="assets/cover3.png" data-main="assets/cover3.png">
+                        </div>
+                    </div>
+                    <div class="info">
+                        <h3 class="title">product cell</h3>
+                        <div class="price"><span class="current">999/-</span><span class="original"> 2000/-</span></div>
+                        <button class="btn" onclick="buy(this, 'Headphones')">Buy Now!</button>
+                    </div>
+                </div>
+   <div class="card">
+                    <div class="img-container">
+                        <div class="badge">best seller</div>
+                        <button class="wishlist" onclick="toggleWish(this)">♡</button>
+                        <img class="main-img" src="assets/cover3.png" alt="Headphones">
+                        <div class="thumbs">
+                            <img class="thumb active" src="assets/cover1.png" data-main="assets/cover1.png">
+                            <img class="thumb" src="assets/cover2.png" data-main="assets/cover2.png">
+                            <img class="thumb" src="assets/cover3.png" data-main="assets/cover3.png">
+                        </div>
+                    </div>
+                    <div class="info">
+                        <h3 class="title">product cell</h3>
+                        <div class="price"><span class="current">999/-</span><span class="original"> 2000/-</span></div>
+                        <button class="btn" onclick="buy(this, 'Headphones')">Buy Now!</button>
+                    </div>
+                </div>
+                 <div class="card">
+                    <div class="img-container">
+                        <div class="badge">best seller</div>
+                        <button class="wishlist" onclick="toggleWish(this)">♡</button>
+                        <img class="main-img" src="assets/cover1.png" alt="Headphones">
+                        <div class="thumbs">
+                            <img class="thumb active" src="assets/cover1.png" data-main="assets/cover1.png">
+                            <img class="thumb" src="assets/cover2.png" data-main="assets/cover2.png">
+                            <img class="thumb" src="assets/cover3.png" data-main="assets/cover3.png">
+                        </div>
+                    </div>
+                    <div class="info">
+                        <h3 class="title">product cell</h3>
+                        <div class="price"><span class="current">999/-</span><span class="original"> 2000/-</span></div>
+                        <button class="btn" onclick="buy(this, 'Headphones')">Buy Now!</button>
+                    </div>
+                </div>
+                  <div class="card">
+                    <div class="img-container">
+                        <div class="badge">Best Seller</div>
+                        <button class="wishlist" onclick="toggleWish(this)">♡</button>
+                        <img class="main-img" src="assets/cover2.png" alt="Headphones">
+                        <div class="thumbs">
+                            <img class="thumb active" src="assets/cover1.png" data-main="assets/cover1.png">
+                            <img class="thumb" src="assets/cover2.png" data-main="assets/cover2.png">
+                            <img class="thumb" src="assets/cover3.png" data-main="assets/cover3.png">
+                        </div>
+                    </div>
+                    <div class="info">
+                        <h3 class="title">THRIFT PANT</h3>
+                        <div class="price"><span class="current">999/-</span><span class="original"> 2000/-</span></div>
+                        <button class="btn" onclick="buy(this, 'Headphones')">Buy Now!</button>
+                    </div>
+                </div>
+               
+                  <div class="card">
+                    <div class="img-container">
+                        <div class="badge">Best Seller</div>
+                        <button class="wishlist" onclick="toggleWish(this)">♡</button>
+                        <img class="main-img" src="assets/cover2.png" alt="Headphones">
+                        <div class="thumbs">
+                            <img class="thumb active" src="assets/cover1.png" data-main="assets/cover1.png">
+                            <img class="thumb" src="assets/cover2.png" data-main="assets/cover2.png">
+                            <img class="thumb" src="assets/cover3.png" data-main="assets/cover3.png">
+                        </div>
+                    </div>
+                    <div class="info">
+                        <h3 class="title">product cell</h3>
+                        <div class="price"><span class="current">999/-</span><span class="original"> 2000/-</span></div>
+                        <button class="btn" onclick="buy(this, 'Headphones')">Buy Now!</button>
+                    </div>
+                </div>
+                  <div class="card">
+                    <div class="img-container">
+                        <div class="badge">Best Seller</div>
+                        <button class="wishlist" onclick="toggleWish(this)">♡</button>
+                        <img class="main-img" src="assets/cover1.png" alt="Headphones">
+                        <div class="thumbs">
+                            <img class="thumb active" src="assets/cover1.png" data-main="assets/cover1.png">
+                            <img class="thumb" src="assets/cover2.png" data-main="assets/cover2.png">
+                            <img class="thumb" src="assets/cover3.png" data-main="assets/cover3.png">
+                        </div>
+                    </div>
+                    <div class="info">
+                        <h3 class="title">product cell</h3>
+                        <div class="price"><span class="current">999/-</span><span class="original"> 2000/-</span></div>
+                        <button class="btn" onclick="buy(this, 'Headphones')">Buy Now!</button>
+                    </div>
+                </div>
+                  <div class="card">
+                    <div class="img-container">
+                        <div class="badge">Best Seller</div>
+                        <button class="wishlist" onclick="toggleWish(this)">♡</button>
+                        <img class="main-img" src="assets/cover1.png" alt="Headphones">
+                        <div class="thumbs">
+                            <img class="thumb active" src="assets/cover1.png" data-main="assets/cover1.png">
+                            <img class="thumb" src="assets/cover2.png" data-main="assets/cover2.png">
+                            <img class="thumb" src="assets/cover3.png" data-main="assets/cover3.png">
+                        </div>
+                    </div>
+                    <div class="info">
+                        <h3 class="title">product cell</h3>
+                        <div class="price"><span class="current">999/-</span><span class="original"> 2000/-</span></div>
+                        <button class="btn" onclick="buy(this, 'Headphones')">Buy Now!</button>
+                    </div>
+                </div>
+                  <div class="card">
+                    <div class="img-container">
+                        <div class="badge">Best Seller</div>
+                        <button class="wishlist" onclick="toggleWish(this)">♡</button>
+                        <img class="main-img" src="assets/cover1.png" alt="Headphones">
+                        <div class="thumbs">
+                            <img class="thumb active" src="assets/cover1.png" data-main="assets/cover1.png">
+                            <img class="thumb" src="assets/cover2.png" data-main="assets/cover2.png">
+                            <img class="thumb" src="assets/cover3.png" data-main="assets/cover3.png">
+                        </div>
+                    </div>
+                    <div class="info">
+                        <h3 class="title">product cell</h3>
+                        <div class="price"><span class="current">999/-</span><span class="original"> 2000/-</span></div>
+                        <button class="btn" onclick="buy(this, 'Headphones')">Buy Now!</button>
+                    </div>
+                </div>
+                  <div class="card">
+                    <div class="img-container">
+                        <div class="badge">Best Seller</div>
+                        <button class="wishlist" onclick="toggleWish(this)">♡</button>
+                        <img class="main-img" src="assets/cover2.png" alt="Headphones">
+                        <div class="thumbs">
+                            <img class="thumb active" src="assets/cover2.png" data-main="assets/cover2.png">
+                            <img class="thumb" src="assets/cover1.png" data-main="assets/cover1.png">
+                            <img class="thumb" src="assets/cover3.png" data-main="assets/cover3.png">
+                        </div>
+                    </div>
+                    <div class="info">
+                        <h3 class="title">product cell</h3>
+
+                        <div class="price"><span class="current">999/-</span><span class="original"> 2000/-</span></div>
+                        <button class="btn" onclick="buy(this, 'Headphones')">Buy Now!</button>
+                    </div>
+                </div>
+                  <div class="card">
+                    <div class="img-container">
+                        <div class="badge">Best Seller</div>
+                        <button class="wishlist" onclick="toggleWish(this)">♡</button>
+                        <img class="main-img" src="assets/cover1.png" alt="Headphones">
+                        <div class="thumbs">
+                            <img class="thumb active" src="assets/cover1.png" data-main="assets/cover1.png">
+                            <img class="thumb" src="assets/cover2.png" data-main="assets/cover2.png">
+                            <img class="thumb" src="assets/cover3.png" data-main="assets/cover3.png">
+                        </div>
+                    </div>
+                    <div class="info">
+                        <h3 class="title">product cell</h3>
+                        <div class="price"><span class="current">999/-</span><span class="original"> 2000/-</span></div>
+                        <button class="btn" onclick="buy(this, 'Headphones')">Buy Now!</button>
+                    </div>
+                </div>
+                <!-- Product 2: Smart Watch -->
+                <div class="card">
+                    <div class="img-container">
+                        <div class="badge">New</div>
+                        <button class="wishlist" onclick="toggleWish(this)">♡</button>
+                        <img class="main-img" src="assets/cover1.png" alt="Smart Watch">
+                        <div class="thumbs">
+                            <img class="thumb active" src="assets/cover2.png" data-main="assets/cover2.png">
+                            <img class="thumb" src="assets/cover1.png" data-main="assets/cover1.png">
+                            <img class="thumb" src="assets/cover3.png" data-main="assets/cover3.png">
+                        </div>
+                    </div>
+                    <div class="info">
+                        <h3 class="title">shirt</h3>
+                        <div class="price"><span class="current">999/-</span><span class="original">2000/-</span></div>
+                        <button class="btn" onclick="buy(this, 'Smart Watch')">Buy Now!</button>
+                    </div>
+                </div>
+
+                <!-- Product 3: Laptop -->
+                <div class="card">
+                    <div class="img-container">
+                        <div class="badge">Hot Deal</div>
+                        <button class="wishlist" onclick="toggleWish(this)">♡</button>
+                        <img class="main-img" src="assets/cover3.png" alt="Laptop">
+                        <div class="thumbs">
+                            <img class="thumb active" src="assets/cover1.png" data-main="assets/cover1.png">
+                            <img class="thumb" src="assets/cover2.png" data-main="assets/cover2.png">
+                            <img class="thumb" src="assets/cover3.png" data-main="assets/cover3.png">
+                        </div>
+                    </div>
+                    <div class="info">
+                        <h3 class="title">product cell</h3>
+                        <div class="price"><span class="current">999/-</span></span><span class="original">1999/-</span></div>
+                        <button class="btn" onclick="buy(this, 'Laptop')">Buy Now!</button>
+                    </div>
+                </div>
+
+                <!-- Product 4: Phone -->
+                <div class="card">
+                    <div class="img-container">
+                        <button class="wishlist" onclick="toggleWish(this)">♡</button>
+                        <img class="main-img" src="assets/cover1.png" alt="Phone">
+                        <div class="thumbs">
+                            <img class="thumb active" src="assets/cover1.png" data-main="assets/cover1.png">
+                            <img class="thumb" src="assets/cover2.png" data-main="assets/cover2.png">
+                            <img class="thumb" src="assets/cover3.png" data-main="assets/cover3.png">
+                        </div>
+                    </div>
+                    <div class="info">
+                        <h3 class="title">product cell</h3>
+                        <div class="price"><span class="current">699/-</span><span class="original">1999/-</span></div>
+                        <button class="btn" onclick="buy(this, 'Smartphone')">Buy Now!</button>
+                    </div>
+                </div>
+
+                <!-- Product 5: Sneakers -->
+                <div class="card">
+                    <div class="img-container">
+                        <div class="badge">Limited</div>
+                        <button class="wishlist" onclick="toggleWish(this)">♡</button>
+                        <img class="main-img" src="assets/cover1.png    " alt="Sneakers">
+                        <div class="thumbs">
+                            <img class="thumb active" src="assets/cover1.png" data-main="assets/cover1.png">
+                            <img class="thumb" src="assets/cover2.png" data-main="assets/cover2.png">
+                            <img class="thumb" src="assets/cover3.png" data-main="assets/cover3.png">
+                        </div>
+                    </div>
+                    <div class="info">
+                        <h3 class="title">Product cell</h3>
+                        <div class="price"><span class="current">899/-</span><span class="original">1999/-</span></div>
+                        <button class="btn" onclick="buy(this, 'Sneakers')">Buy Now!</button>
+                    </div>
+                </div>
+
+                <!-- Product 6: Sunglasses -->
+                <div class="card">
+                    <div class="img-container">
+                        <div class="badge">Trending</div>
+                        <button class="wishlist" onclick="toggleWish(this)">♡</button>
+                        <img class="main-img" src="assets/cover1.png" alt="Sunglasses">
+                        <div class="thumbs">
+                            <img class="thumb active" src="assets/cover1.png" data-main="assets/cover1.png">
+                            <img class="thumb" src="assets/cover2.png" data-main="assets/cover2.png">
+                            <img class="thumb" src="assets/cover3.png" data-main="assets/cover3.png">
+                        </div>
+                    </div>
+                    <div class="info">
+                        <h3 class="title">product cell</h3>
+                        <div class="price"><span class="current">999/-</span><span class="original">1999/-</span></div>
+                        <button class="btn" onclick="buy(this, 'Sunglasses')">Buy Now!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Loading functionality
+        let loadingProgress = 0;
+        const loadingStatus = document.getElementById('loadingStatus');
+        const loadingScreen = document.getElementById('loadingScreen');
+        const mainContent = document.getElementById('mainContent');
+
+        // Simulate loading progress with status updates
+        const loadingSteps = [
+            "Initializing...",
+            "Loading product catalog...",
+            "Optimizing images...",
+            "Preparing user interface...",
+            "Almost ready..."
+        ];
+
+        // Update loading status
+        function updateLoadingStatus() {
+            const stepIndex = Math.min(Math.floor(loadingProgress / 20), loadingSteps.length - 1);
+            loadingStatus.textContent = loadingSteps[stepIndex];
+        }
+
+        // Simulate realistic loading progress
+        function simulateLoading() {
+            const interval = setInterval(() => {
+                loadingProgress += Math.random() * 15 + 5; // Random increment between 5-20
+                updateLoadingStatus();
+                
+                if (loadingProgress >= 100) {
+                    clearInterval(interval);
+                    completeLoading();
+                }
+            }, 200);
+        }
+
+        // Complete loading and show main content
+        function completeLoading() {
+            setTimeout(() => {
+                loadingScreen.classList.add('fade-out');
+                setTimeout(() => {
+                    mainContent.classList.add('show');
+                    initializeStore(); // Initialize store functionality after loading
+                }, 400);
+            }, 500);
+        }
+
+        // Wait for all critical resources to load
+        window.addEventListener('load', () => {
+            // Check if all images are loaded
+            const images = document.querySelectorAll('img');
+            let imagesLoaded = 0;
+            
+            if (images.length === 0) {
+                setTimeout(simulateLoading, 500);
+                return;
+            }
+
+            images.forEach(img => {
+                if (img.complete) {
+                    imagesLoaded++;
+                } else {
+                    img.onload = img.onerror = () => {
+                        imagesLoaded++;
+                        if (imagesLoaded === images.length) {
+                            setTimeout(simulateLoading, 500);
+                        }
+                    };
+                }
+            });
+
+            if (imagesLoaded === images.length) {
+                setTimeout(simulateLoading, 500);
+            }
+        });
+
+        // Store functionality (from original scripts.js)
+        function initializeStore() {
+            document.querySelectorAll('.card').forEach(initCard);
+        }
+
+        function initCard(card) {
+            const main = card.querySelector('.main-img');
+            const thumbs = card.querySelectorAll('.thumb');
+            let idx = 0;
+            let interval;
+
+            function switchImg(i) {
+                const src = thumbs[i].dataset.main;
+                main.style.opacity = '0';
+                
+                setTimeout(() => {
+                    main.src = src;
+                    main.style.opacity = '1';
+                    
+                    thumbs.forEach(t => t.classList.remove('active'));
+                    thumbs[i].classList.add('active');
+                    
+                    idx = i;
+                }, 150);
+            }
+
+            main.onmouseenter = () => {
+                interval = setInterval(() => {
+                    idx = (idx + 1) % thumbs.length;
+                    switchImg(idx);
+                }, 1000);
+            };
+
+            main.onmouseleave = () => {
+                clearInterval(interval);
+            };
+
+            thumbs.forEach((t, i) => {
+                t.onclick = t.onmouseenter = (e) => {
+                    e.stopPropagation();
+                    clearInterval(interval);
+                    switchImg(i);
+                };
+            });
+        }
+
+        function toggleWish(btn) {
+            const isWished = btn.textContent === '♥';
+            btn.textContent = isWished ? '♡' : '♥';
+            btn.style.color = isWished ? '' : '#ff6b35';
+        }
+
+        function buy(btn, productName) {
+            window.location.href="form.html";
+            
+            const originalText = btn.textContent;
+            btn.textContent = 'Added!';
+            btn.style.background = '#28a745';
+            btn.style.borderColor = '#28a745';
+        }
+        </script>
+       
+         <footer>
+    <div class="footer-container">
+      <div class="footer-message">
+        <p>To the peeps who took a chance to check my website, thank you for validating this!</p>
+        <p>“This prototype is a starting point, and it motivates me to aim higher and accomplish more.”</p>
+        <p>© All rights reserved by Habeeb(developer)</p>
+      </div>
+
+      <div class="footer-contact">
+        <h3>Contact info</h3>
+        <p>📞 +91 9497844660</p>
+        <p>✉️ calionformen@gmail.com</p>
+      </div>
+
+      <div class="footer-admins">
+        <h3>founders</h3>
+        <ul>
+          <li>owner 1:Habeeb</li>
+          <li>owner 2: Anandhu</li>
+          <li>owner 3: Adeep</li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+   
+</body>
+</html>
